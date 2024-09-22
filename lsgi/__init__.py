@@ -1,10 +1,8 @@
-from six.moves.urllib.parse import urlencode
 from werkzeug.wrappers import Response
-from werkzeug.urls import url_unquote
+from urllib.parse import unquote as url_unquote, urlencode
 import base64
 import logging
-import six
-import six
+import io
 import sys
 
 logger = logging.getLogger(__name__)
@@ -85,10 +83,10 @@ def event_to_environ(event, context):
     if body and event.get('isBase64Encoded', False):
         body = base64.b64decode(body)
     else:
-        if isinstance(body, six.string_types):
+        if isinstance(body, str):
             body = body.encode('utf-8')
 
-    environ['wsgi.input'] = six.BytesIO(body)
+    environ['wsgi.input'] = io.BytesIO(body)
     environ['CONTENT_LENGTH'] = str(len(body or ''))
 
     query_string = event.get('queryStringParameters', {})
